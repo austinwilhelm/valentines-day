@@ -30,10 +30,8 @@
         .buttons {
             margin-top: 20px;
             display: flex;
-            justify-content: space-around;
-            gap: 20px;
-            flex-wrap: wrap;
-            position: relative;
+            justify-content: center;
+            gap: 20px; /* Space between the buttons */
         }
         button {
             padding: 10px 20px;
@@ -41,7 +39,6 @@
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            flex: 1 0 45%; /* Ensures buttons adjust nicely for smaller screens */
             max-width: 150px; /* Limit button width */
         }
         .yes-btn {
@@ -51,7 +48,7 @@
         .no-btn {
             background: #6c757d;
             color: white;
-            position: absolute; /* Adjusted for better control of the button */
+            position: relative; /* Keep it in the flow of the layout initially */
         }
         /* Responsive Design */
         @media (max-width: 600px) {
@@ -82,32 +79,22 @@
 
         function moveNoButton() {
             const noBtn = document.querySelector('.no-btn');
-            const yesBtn = document.querySelector('.yes-btn');
             const buttonContainer = document.querySelector('.buttons');
             
-            const buttonContainerWidth = buttonContainer.offsetWidth;
-            const buttonContainerHeight = buttonContainer.offsetHeight;
+            const containerRect = buttonContainer.getBoundingClientRect();
+            const maxX = window.innerWidth - containerRect.left - noBtn.offsetWidth - 20; // 20px padding
+            const maxY = window.innerHeight - containerRect.top - noBtn.offsetHeight - 20; // 20px padding
             
-            const maxX = buttonContainerWidth - noBtn.offsetWidth - 10; // 10px padding
-            const maxY = buttonContainerHeight - noBtn.offsetHeight - 10; // 10px padding
-            
-            // Get random positions that do not overlap the "Yes" button
             let x = Math.random() * maxX;
             let y = Math.random() * maxY;
             
-            // Check for overlap with "Yes" button and adjust position if necessary
-            const yesBtnRect = yesBtn.getBoundingClientRect();
-            const noBtnRect = noBtn.getBoundingClientRect();
-            
-            // If the "No" button is too close to the "Yes" button, adjust its position
-            while (
-                x < yesBtnRect.right && x + noBtn.offsetWidth > yesBtnRect.left &&
-                y < yesBtnRect.bottom && y + noBtn.offsetHeight > yesBtnRect.top
-            ) {
+            // Ensure the "No" button stays within the visible screen area
+            while (x < 0 || x + noBtn.offsetWidth > window.innerWidth || y < 0 || y + noBtn.offsetHeight > window.innerHeight) {
                 x = Math.random() * maxX;
                 y = Math.random() * maxY;
             }
 
+            noBtn.style.position = "absolute";  // Move the "No" button out of the flow when it moves
             noBtn.style.left = `${x}px`;
             noBtn.style.top = `${y}px`;
         }
