@@ -15,6 +15,7 @@
             flex-direction: column;
             text-align: center;
             margin: 0;
+            position: relative;
         }
         .card {
             background: white;
@@ -23,6 +24,7 @@
             box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
             max-width: 90%;
             width: 400px;
+            z-index: 10; /* Keep the card above the emoji shower */
         }
         h1 {
             color: #d63384;
@@ -48,8 +50,26 @@
         .no-btn {
             background: #6c757d;
             color: white;
-            position: relative; /* Keep it in the flow of the layout initially */
         }
+        /* Flower and cow animation styles */
+        .emoji {
+            position: absolute;
+            font-size: 50px; /* Larger size for flowers and cows */
+            opacity: 1;
+            animation: fall 3s infinite ease-in;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
         /* Responsive Design */
         @media (max-width: 600px) {
             button {
@@ -72,9 +92,35 @@
         </div>
     </div>
 
+    <!-- Flower container -->
+    <div id="flower-container"></div>
+
     <script>
         function yesClicked() {
-            alert("Heck yeah, alright I will see ya when I see ya 😌");
+            alert("aw heck yeah, I will see ya when I see ya 😌");
+
+            // Create flower and cow emoji shower effect
+            const flowerContainer = document.getElementById('flower-container');
+
+            // Create multiple emojis (90% flowers, 10% cows)
+            for (let i = 0; i < 20; i++) {
+                const emoji = document.createElement('span');
+                emoji.classList.add('emoji');
+
+                // 90% chance for a flower emoji, 10% for a cow emoji
+                emoji.innerText = Math.random() < 0.9 ? '🌸' : '🐄';
+
+                // Randomly position each emoji
+                emoji.style.left = `${Math.random() * window.innerWidth}px`;
+                emoji.style.animationDuration = `${Math.random() * 2 + 2}s`;
+
+                flowerContainer.appendChild(emoji);
+
+                // Remove emoji after animation ends
+                setTimeout(() => {
+                    emoji.remove();
+                }, 3000); // Remove emoji after it falls
+            }
         }
 
         function moveNoButton() {
